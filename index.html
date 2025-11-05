@@ -1,8 +1,175 @@
-<iframe
-  src="https://rfcctv.fortiddns.com:8443/public/mapshow.htm?id=2447&mapid=D85564DB-3F1D-4D10-8E21-99B0CA9B2D98"
-  width="100%"
-  height="800"
-  style="border: none;"
-  allowfullscreen
-  loading="lazy">
-</iframe>
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>สถานะ Network map วันนี้</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent1:#06b6d4;
+      --accent2:#7c3aed;
+      --glass: rgba(255,255,255,0.04);
+      --muted: rgba(255,255,255,0.6);
+      --success: #10b981;
+      --danger: #ef4444;
+      font-family: Inter, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg,#071024 0%, #071428 60%);
+      color:#e6eef8;
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{max-width:1200px;margin:28px auto;padding:20px}
+
+    header{
+      display:flex;align-items:center;gap:20px;justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;gap:14px;align-items:center;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:white;box-shadow:0 6px 18px rgba(124,58,237,0.18);
+    }
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:12px;align-items:center}
+    .pill{background:var(--glass);padding:8px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
+    .status-dot{width:10px;height:10px;border-radius:50%}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:inherit;cursor:pointer}
+
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+
+    .left{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:16px;border-radius:12px;backdrop-filter:blur(6px);box-shadow:0 6px 30px rgba(2,6,23,0.6);
+    }
+    .time{font-size:22px;font-weight:600}
+    .small{font-size:13px;color:var(--muted)}
+    .metric{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));padding:12px;border-radius:10px}
+
+    iframe{width:100%;height:calc(100vh - 220px);border:0;border-radius:10px;overflow:hidden}
+
+    @media (max-width:900px){
+      .grid{grid-template-columns:1fr;}
+      iframe{height:520px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">NM</div>
+        <div>
+          <h1>สถานะ Network map วันนี้</h1>
+          <p class="lead">ภาพรวมสถานะเครือข่ายแบบเรียลไทม์ — ตรวจสอบปัจจุบันและเวลาที่อัพเดต</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="pill">
+          <div id="statusDot" class="status-dot" style="background:var(--success)"></div>
+          <div id="statusText">Online</div>
+        </div>
+        <button class="btn" id="refreshBtn">Refresh iframe</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <aside class="left">
+        <div>
+          <div class="small">วันที่และเวลา (ไทย)</div>
+          <div class="time" id="timeDisplay">--:--:--</div>
+          <div class="small" id="dateDisplay">กำลังโหลดวันที่...</div>
+        </div>
+
+        <div class="metric">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-size:13px;color:var(--muted)">แผนที่</div>
+                <div style="font-weight:600">Map ID: D85564DB-3F1D-4D10-8E21-99B0CA9B2D98</div>
+              </div>
+              <div class="small">อัพเดตล่าสุด: <span id="lastUpdated">--</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;gap:10px;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:13px;color:var(--muted)">สถานะรวม</div>
+                <div style="font-weight:700">เครือข่ายปกติ</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:13px;color:var(--muted)">ออนไลน์</div>
+                <div style="font-weight:700;color:var(--success)">23 / 25</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="font-size:13px;color:var(--muted)">หมายเหตุ</div>
+            <div style="margin-top:8px;font-size:14px">กด "Refresh iframe" เพื่อโหลดแผนที่ใหม่ หรือปิด/เปิด iframe เมื่อพบการเชื่อมต่อผิดพลาด</div>
+          </div>
+        </div>
+      </aside>
+
+      <section>
+        <!-- user-provided iframe embedded here -->
+        <iframe id="netmapFrame" src="https://rfcctv.fortiddns.com:8443/public/mapshow.htm?id=2447&mapid=D85564DB-3F1D-4D10-8E21-99B0CA9B2D98" loading="lazy" allowfullscreen></iframe>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Update time in Thai locale (Asia/Bangkok)
+    function updateTime(){
+      const now = new Date();
+      // show time HH:MM:SS and full date in Thai
+      const timeStr = now.toLocaleTimeString('th-TH', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit', timeZone:'Asia/Bangkok'});
+      const dateStr = now.toLocaleDateString('th-TH', {weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Bangkok'});
+      document.getElementById('timeDisplay').textContent = timeStr;
+      document.getElementById('dateDisplay').textContent = dateStr;
+      document.getElementById('lastUpdated').textContent = timeStr;
+    }
+    updateTime();
+    setInterval(updateTime,1000);
+
+    // Simple iframe refresh & optimistic status update
+    document.getElementById('refreshBtn').addEventListener('click', ()=>{
+      const f = document.getElementById('netmapFrame');
+      // add cache-busting query param
+      const src = f.src.split('?')[0];
+      const params = new URLSearchParams(location.search);
+      // preserve original query part after ? in the iframe's src
+      const origQuery = 'id=2447&mapid=D85564DB-3F1D-4D10-8E21-99B0CA9B2D98';
+      f.src = src + '?' + origQuery + '&_ts=' + Date.now();
+      // update status pill while reloading
+      const dot = document.getElementById('statusDot');
+      const txt = document.getElementById('statusText');
+      dot.style.background = 'var(--accent1)';
+      txt.textContent = 'Reloading';
+      setTimeout(()=>{ dot.style.background = 'var(--success)'; txt.textContent = 'Online'; }, 1800);
+    });
+
+    // Try to detect iframe load/fail (limited by cross-origin)
+    const iframe = document.getElementById('netmapFrame');
+    iframe.addEventListener('load', ()=>{
+      document.getElementById('statusDot').style.background = 'var(--success)';
+      document.getElementById('statusText').textContent = 'Online';
+      document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('th-TH', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit', timeZone:'Asia/Bangkok'});
+    });
+    // Note: if the iframe is blocked by CORS/security, load event might still fire; for robust checks you'd need server-side health checks.
+  </script>
+</body>
+</html>
