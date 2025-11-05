@@ -14,7 +14,6 @@
     }
     header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       background: rgba(15, 23, 42, 0.9);
       padding: 10px 20px;
@@ -24,6 +23,13 @@
       left: 0;
       right: 0;
       z-index: 1000;
+    }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-right: 15px;
+      letter-spacing: 1px;
     }
     h1 {
       font-size: 1.2rem;
@@ -49,6 +55,7 @@
 </head>
 <body>
   <header>
+    <div class="logo">NT</div>
     <h1>สถานะ Network map วันนี้</h1>
     <div id="datetime"></div>
   </header>
